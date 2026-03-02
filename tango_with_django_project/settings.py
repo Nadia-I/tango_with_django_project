@@ -142,3 +142,7 @@ MEDIA_URL = '/media/'
 
 # login mappings
 LOGIN_URL = 'rango:login'
+
+# login lengths and types
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 1209600 
