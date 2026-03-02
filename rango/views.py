@@ -10,7 +10,8 @@ from rango.forms import CategoryForm
 from rango.forms import PageForm
 
 from rango.forms import UserForm, UserProfileForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -28,6 +29,7 @@ def index(request):
 def about(request):
     context_dict = {'boldmessage': 'This tutorial has been put together by Nadia Issouquaein'}
     return render(request, 'rango/about.html', context=context_dict)
+
 
 def show_category(request, category_name_slug):
     # Create a context dictionary which we can pass
@@ -71,7 +73,6 @@ def add_category(request):
     # Will handle the bad form, new form, or no form supplied cases.
     # Render the form with error messages (if any).
     return render(request, 'rango/add_category.html', {'form': form})
-
 
 
 def add_page(request, category_name_slug):
@@ -137,7 +138,6 @@ def register(request):
     return render(request, 'rango/register.html', context = {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
 
 
-
 def user_login(request):
     # If the request is a HTTP POST, try to pull out the relevant information.
     if request.method == 'POST':
@@ -159,3 +159,17 @@ def user_login(request):
         
     else:
         return render(request, 'rango/login.html')
+    
+
+@login_required
+def restricted(request):
+    return HttpResponse("Since you're logged in, you can see this text!")
+
+
+# Use the login_required() decorator to ensure only those logged in can access the view.
+@login_required
+def user_logout(request):
+    # Since we know the user is logged in, we can now just log them out.
+    logout(request)
+    # Take the user back to the homepage.
+    return redirect(reverse('rango:index'))
